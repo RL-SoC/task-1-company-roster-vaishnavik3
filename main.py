@@ -5,7 +5,7 @@ We'll be Querying stuff for testing whether your classes were defined correctly
 Whenever something inappropriate happens (like a function returning false in people.py),
 raise a Value Error.
 """
-from people import * # import everything!
+from people import Employee, Engineer, Salesman # import everything!
 
 if __name__ == "__main__":  # Equivalent to int main() {} in C++.
     last_input = 99
@@ -16,10 +16,13 @@ if __name__ == "__main__":  # Equivalent to int main() {} in C++.
             name = input("Name:")
             ID = input("ID:")
             city = input("City:")
-            branchcodes = input("Branch(es):")
+            # branchcodes = input("Branch(es):")
             # How will you conver this to a list, given that
             # the user will always enter a comma separated list of branch codes?
             # eg>   2,5
+            branchcodes_input = input("Branch(es):")  # e.g., user enters "2,5"
+            # Convert the comma-separated string to a list of integers
+            branchcodes = [int(code.strip()) for code in branchcodes_input.split(",")]
 
             salary = input("Salary: ")
             # Create a new Engineer with given details.
