@@ -20,7 +20,7 @@ class Employee:
     name : str 
     age : int
     ID : int
-    city : int
+    city : str
     branches : list[int] # This is a list of branches (as branch codes) to which the employee may report
     salary : int 
 
@@ -216,9 +216,11 @@ class Salesman(Employee):
 
         pass
 
-    def add_superior(self) -> bool:
+    def add_superior(self, emp_id: int) -> bool:
         # Add superior of immediately higher rank.
         # If superior doesn't exist return false,
+        if self.position == "Head":
+            return false
         pass
 
 
