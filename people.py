@@ -36,17 +36,36 @@ class Employee:
     
     def change_city(self, new_city:str) -> bool:
         # Change the city 
-        # Return true if city change, successful, return false if city same as old city
+        if self.city != new_city:
+            self.city = new_city
+            # Return true if city change, successful, return false if city same as old city
+            return true
+        return false
+        
         pass
 
     def migrate_branch(self, new_code:int) -> bool:
         # Should work only on those employees who have a single 
         # branch to report to. Fail for others.
+        if len(self.branches) != 1:
+            return false
+
+        current_branch_code = self.branches[0]
+        current_city = self.branchmap[current_branch_code]["city"]
+        new_city = self.branchmap[new_code]["city"]
+
         # Change old branch to new if it is in the same city, else return false.
+        if current_city == new_city:
+            self.branches[0] = new_code
+            return True
+        else:
+            return False
+    
         pass
 
     def increment(self, increment_amt: int) -> None:
         # Increment salary by amount specified.
+        self.salary += increment_amt
         pass
 
 
@@ -61,13 +80,22 @@ class Engineer(Employee):
         # Call the parent's constructor
         super().__init__(name, age, ID, city, branchcodes, salary)
         
-        # Check if position is one of  "Junior", "Senior", "Team Lead", or "Director" 
+        # Check if position is one of "Junior", "Senior", "Team Lead", or "Director"
         # Only then set the position. 
+        if position in ["Junior", "Senior", "Team Lead", "Director"]:
+            self.position = position
+        else:
+            self.position = "Junior" 
+        
 
     
     def increment(self, amt:int) -> None:
         # While other functions are the same for and engineer,
         # and increment to an engineer's salary should add a 10% bonus on to "amt"
+        bonus = amt * 0.10
+        total_increment = amt + bonus
+        self.salary += total_increment
+
         pass
         
     def promote(self, position:str) -> bool:
@@ -75,6 +103,26 @@ class Engineer(Employee):
         # Promotion can only be to a higher position and
         # it should call the increment function with 30% of the present salary
         # as "amt". Thereafter return True.
+        if position not in ["Senior", "Team Lead", "Director"]:
+            return False
+        
+        if position == "Senior" and self.position in ["Team Lead", "Director"]:
+            return False
+        
+        if position == "Team Lead" and self.position == "Director":
+            return False
+        
+        # Promotion to a higher position
+        current_salary = self.salary
+        amt = current_salary * 0.30  # 30% of present salary as amt
+        
+        # Call the increment function with amt
+        self.increment(amt)
+        
+        # Update position
+        self.position = position
+        
+        return True
         pass
 
 
@@ -93,17 +141,79 @@ class Salesman(Employee):
     
     # An extra member variable!
     superior : int # EMPLOYEE ID of the superior this guy reports to
+    position : str # Position in organization Hierarchy
 
-    def __init__(self, ): # Complete all this! Add arguments
-        pass
+    def __init__(self, name, age, ID, city,\
+                 branchcodes, position= "Rep", salary = None, superior = None):
+        # Call the parent's constructor
+        super().__init__(name, age, ID, city, branchcodes, salary)
+        
+        # Check if position is one of "Rep", "Manager" or "Head"
+        # Only then set the position. 
+        if position in ["Rep", "Manager", "Head"]:
+            self.position = position
+        else:
+            self.position = "Rep"
+
+        if position != "Head":
+            self.superior = superior
+        else:
+            self.superior = None
     
-    # def promote 
 
     # def increment 
+    def increment(self, amt:int) -> None:
+        # Add increment (this time only a 5% bonus)
+        bonus = amt * 0.05
+        total_increment = amt + bonus
+        self.salary += total_increment
+
+        pass
+
+    
+     # def promote 
+    def promote(self, position:str) -> bool:
+        # Return false for a demotion or an invalid promotion
+        # Promotion can only be to a higher position and
+        # it should call the increment function with 30% of the present salary
+        # as "amt". Thereafter return True.
+        if position not in ["Manager", "Head"]:
+            return False
+        
+        if position == "Manager" and self.position in ["Head"]:
+            return False
+        
+        # Promotion to a higher position
+        current_salary = self.salary
+        amt = current_salary * 0.30  # 30% of present salary as amt
+        
+        # Call the increment function with amt
+        self.increment(amt)
+        
+        # Update position
+        self.position = position
+        
+        return True
+        pass
+
+    # To get the name of any employee from their ID
+    def get_employee_name_by_id(emp_id, Salesman):
+        for employee in Salesman:
+            if employee['ID'] == emp_id:
+                return employee['name']
+        return None  # Return None if employee with given ID is not found
+
 
     def find_superior(self) -> tuple[int, str]:
         # Return the employee ID and name of the superior
         # Report a tuple of None, None if no superior.
+        if self.superior is None:
+            return (None, None)
+        else:
+            superior_id = self.superior
+            superior_name = self.get_employee_name_by_id(superior_id, Salesman)
+            return (superior_id, superior_name)
+
         pass
 
     def add_superior(self) -> bool:
@@ -114,9 +224,8 @@ class Salesman(Employee):
 
     def migrate_branch(self, new_code: int) -> bool:
         # This should simply add a branch to the list; even different cities are fine
+        self.branches.append(new_code)
         pass
-
-    
 
 
 
